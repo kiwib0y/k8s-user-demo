@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-demo
+  template:
+    metadata:
+      labels:
+        app: app-demo
+    spec:
+      containers:
+      - name: app-demo
+        image: kiwib0y/user-demo:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: postgres-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-demo
+spec:
+  selector:
+    app: app-demo
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
